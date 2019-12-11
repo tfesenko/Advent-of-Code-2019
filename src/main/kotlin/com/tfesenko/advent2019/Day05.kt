@@ -1,5 +1,6 @@
 package com.tfesenko.advent2019
 
+import kotlinx.coroutines.runBlocking
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintStream
@@ -35,6 +36,14 @@ open class IntcodeComputer(originalMemory: LongArray) {
     private var relativeBase: Int = 0
 
     fun run() {
+        runBlocking {
+            while (executeInstruction()) {
+            }
+        }
+    }
+
+    suspend fun runSuspended() {
+        println("Started")
         while (executeInstruction()) {
         }
     }
@@ -44,7 +53,7 @@ open class IntcodeComputer(originalMemory: LongArray) {
         return memory[0]
     }
 
-    private fun executeInstruction(): Boolean {
+    private suspend fun executeInstruction(): Boolean {
         startOfCurrentInstruction = instructionPointer
         val instruction = nextValue()
         val code = (instruction % 100).toInt()
@@ -83,14 +92,14 @@ open class IntcodeComputer(originalMemory: LongArray) {
         return true
     }
 
-    private fun input(modes: AtomicInteger): Boolean {
+    private suspend fun input(modes: AtomicInteger): Boolean {
         val position = nextValue().toInt()
         val input = inputValue()
         writeTo(position, input.toLong(), modes.nextMode())
         return true
     }
 
-    protected open fun inputValue(): Int {
+    protected open suspend fun inputValue(): Int {
         print("Please enter value: ")
         val input = readLine()!!.toInt()
         println(" <input: $input>")
