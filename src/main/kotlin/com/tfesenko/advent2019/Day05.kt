@@ -42,12 +42,6 @@ open class IntcodeComputer(originalMemory: LongArray) {
         }
     }
 
-    suspend fun runSuspended() {
-        println("Started")
-        while (executeInstruction()) {
-        }
-    }
-
     fun runAndGetFirstCell(): Long {
         run()
         return memory[0]
